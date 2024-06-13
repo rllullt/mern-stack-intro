@@ -17,3 +17,7 @@ source ./env/bin/activate
 pip3 install nodeenv
 nodeenv --python-virtualenv --node=lts
 ```
+
+## Nodemon
+
+Node package that lets to automatically update the content of the project when changing the files.
