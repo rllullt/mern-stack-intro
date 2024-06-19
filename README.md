@@ -2,6 +2,10 @@
 
 The  MERN stack  is a web development framework made up of the stack of MongoDB, Express, React.js, and Node.js. It is one of the several variants of the  MEAN stack.
 
+## Red Bicicletas
+
+Red Bicicletas is created from a Coursera course called «Desarrollo del lado servidor: NodeJS, Express y MongoDB» by the Austral University.
+
 ## To create the Express application
 
 It can be used the `express-generator` package.
