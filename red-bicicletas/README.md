@@ -38,3 +38,8 @@ Quick map creator used for adding a map fast.
 1. Create the router for bicicletas.
 1. Create methods for listing, creating, eliminating and updating bicicletas by the web.
 1. Review the process of the operations created.
+
+## Testing
+
+The jasmine package is used.
+Tests are contained in the ‘spec’ folder.
