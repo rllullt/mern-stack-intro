@@ -1,7 +1,5 @@
 const Bicicleta = require("../../models/bicicleta");
-const BicicletaContainer = require("../../models/bicicletaContainer");
-
-const bicicletaContainer = new BicicletaContainer();
+const bicicletaContainer = require("../../models/bicicletaContainer");
 
 beforeEach(() => { bicicletaContainer.allBicis = []; });
 

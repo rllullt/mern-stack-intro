@@ -27,4 +27,6 @@ class BicicletaContainer {
     }
 }
 
-module.exports = BicicletaContainer;
+const bicicletaContainer = new BicicletaContainer();
+
+module.exports = bicicletaContainer;

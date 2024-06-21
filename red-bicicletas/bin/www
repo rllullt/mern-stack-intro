@@ -88,3 +88,5 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+module.exports = server;  // con esto se puede usar server en otros archivos (ej. tests)
