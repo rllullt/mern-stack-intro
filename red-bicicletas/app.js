@@ -11,6 +11,14 @@ const bicicletasAPIRouter = require('./routes/api/bicicletas');
 
 const app = express();
 
+const mongoose = requre('mongoose');
+
+const mongoDB = 'mongodb://localhost/red_bicicletas';
+mongoose.connect(mongoDB, { useNewUrlParser: true });
+mongoose.Promise = global.Promise;
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error: '));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

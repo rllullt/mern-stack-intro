@@ -1,6 +1,67 @@
+const mongoose = require('mongoose');
 const Bicicleta = require("../../models/bicicleta");
 const bicicletaContainer = require("../../models/bicicletaContainer");
 
+describe('Testing Bicicletas', function() {
+    beforeAll(function(done) {
+        const mongoDB = 'mongodb://localhost/testdb';
+        mongoose.connect(mongoDB, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+
+        const db = mongoose.connection;
+        db.on('error', console.error.bind(console, 'connection error'));
+        db.once('open', function() {
+            console.log('We are connected to test database!');
+            done();  // con done sale del beforeEach
+        });
+    });
+
+    afterEach(function(done) {
+        Bicicleta.deleteMany().then(() => {
+            // Success
+            console.log("Deleted Many");
+            done();
+        }).catch(error => {
+            // Failure
+            console.log(error);
+        });
+    });
+
+    describe('Bicicleta.createInstance', () => {
+        it('crea una instancia de Bicicleta', (done) => {
+            const bici = Bicicleta.createInstance(1, "verde", "urbana", [-34.5, -54.1]);
+
+            expect(bici.code).toBe(1);
+            expect(bici.color).toBe("verde");
+            expect(bici.modelo).toBe("urbana");
+            expect(bici.ubicacion[0]).toEqual(-34.5);
+            expect(bici.ubicacion[1]).toEqual(-54.1);
+
+            done();
+        });
+    });
+
+    describe("Bicicleta.allBicis", () => {
+        it('Comienza vacía', async () => {
+            const bicis = await Bicicleta.allBicis();
+            expect(bicis.length).toBe(0);
+        });
+    });
+
+    describe("Bicicleta.add", () => {
+        it('agregamos solo una bici', async () => {
+            const aBici = new Bicicleta({code: 1, color: 'rojo', modelo: 'urbana'});
+            await Bicicleta.add(aBici);
+            const bicis = await Bicicleta.allBicis();
+            expect(bicis.length).toBe(1);
+            expect(bicis[0].code).toEqual(aBici.code);
+        });
+    });
+});
+
+/*
 beforeEach(() => { bicicletaContainer.allBicis = []; });
 
 describe("bicicletaContainer.allBicis", () => {
@@ -48,3 +109,4 @@ describe("bicicletaContainer.removeById", () => {
         expect(bicicletaContainer.findById(2)['color']).toBe('azul');
     })
 })
+*/
