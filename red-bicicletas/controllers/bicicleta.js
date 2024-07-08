@@ -1,8 +1,8 @@
 const Bicicleta = require("../models/bicicleta");
 const bicicletaContainer = require("../models/bicicletaContainer");
 
-const a = new Bicicleta(1, 'rojo', 'urbana', [-34.6012424, -58.3861497]);
-const b = new Bicicleta(2, 'azul', 'urbana', [-34.596932, -58.3808287]);
+const a = Bicicleta.createInstance(1, 'rojo', 'urbana', [-34.6012424, -58.3861497]);
+const b = Bicicleta.createInstance(2, 'azul', 'urbana', [-34.596932, -58.3808287]);
 
 bicicletaContainer.add(a);
 bicicletaContainer.add(b);

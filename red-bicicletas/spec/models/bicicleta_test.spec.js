@@ -59,6 +59,44 @@ describe('Testing Bicicletas', function() {
             expect(bicis[0].code).toEqual(aBici.code);
         });
     });
+
+    describe("Bicicleta.findByCode", () => {
+        it('debe devolver la bici con code 1', async () => {
+            const bicis = await Bicicleta.allBicis();
+            expect(bicis.length).toBe(0);
+
+            const aBici = new Bicicleta({code: 1, color: 'rojo', modelo: 'urbana'});
+            await Bicicleta.add(aBici);
+
+            const aBici2 = new Bicicleta({code: 2, color: 'azul', modelo: 'montaña'});
+            await Bicicleta.add(aBici2);
+
+            const targetBici = await Bicicleta.findByCode(1);
+            expect(targetBici.code).toBe(aBici.code);
+            expect(targetBici.color).toBe(aBici.color);
+            expect(targetBici.modelo).toBe(aBici.modelo);
+        });
+    });
+
+    describe("Bicicleta.removeByCode", () => {
+        it('debe eliminar la bici con code 1', async () => {
+            let bicis = await Bicicleta.allBicis();
+            expect(bicis.length).toBe(0);
+
+            const aBici = new Bicicleta({code: 1, color: 'rojo', modelo: 'urbana'});
+            await Bicicleta.add(aBici);
+
+            const aBici2 = new Bicicleta({code: 2, color: 'azul', modelo: 'montaña'});
+            await Bicicleta.add(aBici2);
+
+            await Bicicleta.removeByCode(1);
+            
+            bicis = await Bicicleta.allBicis();
+            expect(bicis.length).toEqual(1);
+            expect(bicis[0].code).toBe(2);
+            expect(bicis[0].color).toBe('azul');
+        })
+    })
 });
 
 /*

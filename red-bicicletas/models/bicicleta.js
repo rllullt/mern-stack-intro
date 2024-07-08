@@ -37,4 +37,12 @@ bicicletaSchema.statics.add = async function(aBici) {
     await this.create(aBici);
 }
 
+bicicletaSchema.statics.findByCode = async function(aCode) {
+    return await this.findOne({code: aCode});
+}
+
+bicicletaSchema.statics.removeByCode = async function(aCode) {
+    await this.deleteOne({code: aCode});
+}
+
 module.exports = mongoose.model('Bicicleta', bicicletaSchema);
