@@ -6,9 +6,9 @@ const usuarioSchema = new Schema({
     nombre: String,
 });
 
-usuarioSchema.statics.reservar = async (biciId, userId, desde, hasta) => {
+usuarioSchema.statics.reservar = (biciId, userId, desde, hasta) => {
     const reserva = new Reserva({bicicleta: biciId, usuario: userId, desde: desde, hasta: hasta});
-    await reserva.save();
+    return reserva.save();
 }
 
 module.exports = mongoose.model('Usuario', usuarioSchema);

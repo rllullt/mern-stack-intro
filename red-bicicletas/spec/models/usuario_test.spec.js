@@ -43,14 +43,16 @@ describe('Testing Usuarios', function() {
             const hoy = new Date();
             const mañana = new Date();
             mañana.setDate(hoy.getDate()+1);
-            await Usuario.reservar(bicicleta.id, usuario.id, hoy, mañana);
-
-            const reservas = await Reserva.find({}).populate('bicicleta').populate('usuario').exec();
-            // console.log('debe existir la reserva, reservas:', reservas);
-            expect(reservas.length).toBe(1);
-            expect(reservas[0].diasDeReserva()).toBe(2);
-            expect(reservas[0].bicicleta.code).toBe(1);
-            expect(reservas[0].usuario.nombre).toBe(usuario.nombre);
+            Usuario.reservar(bicicleta.id, usuario.id, hoy, mañana).then(reserva => {
+                // console.log('reserva hecha');
+                Reserva.find({}).populate('bicicleta').populate('usuario').exec().then(reservas => {
+                    // console.log('debe existir la reserva, reservas:', reservas);
+                    expect(reservas.length).toBe(1);
+                    expect(reservas[0].diasDeReserva()).toBe(2);
+                    expect(reservas[0].bicicleta.code).toBe(1);
+                    expect(reservas[0].usuario.nombre).toBe(usuario.nombre);
+                });
+            });
         });
     });
 });
