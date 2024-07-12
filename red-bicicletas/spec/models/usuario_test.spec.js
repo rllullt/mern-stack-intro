@@ -6,10 +6,7 @@ const Reserva = require('../../models/reserva');
 describe('Testing Usuarios', function() {
     beforeAll(function(done) {
         const mongoDB = 'mongodb://localhost/testdb';
-        mongoose.connect(mongoDB, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        mongoose.connect(mongoDB);
 
         const db = mongoose.connection;
         db.on('error', console.error.bind(console, 'connection error'));
@@ -49,7 +46,7 @@ describe('Testing Usuarios', function() {
             await Usuario.reservar(bicicleta.id, usuario.id, hoy, mañana);
 
             const reservas = await Reserva.find({}).populate('bicicleta').populate('usuario').exec();
-            console.log('debe existir la reserva, reservas:', reservas);
+            // console.log('debe existir la reserva, reservas:', reservas);
             expect(reservas.length).toBe(1);
             expect(reservas[0].diasDeReserva()).toBe(2);
             expect(reservas[0].bicicleta.code).toBe(1);

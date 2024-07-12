@@ -5,10 +5,7 @@ const bicicletaContainer = require("../../models/bicicletaContainer");
 describe('Testing Bicicletas', function() {
     beforeAll(function(done) {
         const mongoDB = 'mongodb://localhost/testdb';
-        mongoose.connect(mongoDB, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        mongoose.connect(mongoDB);
 
         const db = mongoose.connection;
         db.on('error', console.error.bind(console, 'connection error'));
