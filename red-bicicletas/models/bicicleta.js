@@ -33,8 +33,8 @@ bicicletaSchema.statics.allBicis = async function() {
     return await this.find({});
 };
 
-bicicletaSchema.statics.add = async function(aBici) {
-    await this.create(aBici);
+bicicletaSchema.statics.add = function(aBici) {
+    return this.create(aBici);
 }
 
 bicicletaSchema.statics.findByCode = async function(aCode) {

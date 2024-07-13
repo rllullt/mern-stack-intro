@@ -5,25 +5,33 @@ const Reserva = require('../../models/reserva');
 
 describe('Testing Usuarios', function() {
     beforeAll(function(done) {
-        const mongoDB = 'mongodb://localhost/testdb';
-        mongoose.connect(mongoDB);
-
+        /*
+        ready states:
+          0: disconnected
+          1: connected
+          2: connecting
+          3: disconnecting
+        */
         const db = mongoose.connection;
-        db.on('error', console.error.bind(console, 'connection error'));
-        db.once('open', function() {
-            console.log('We are connected to test database!');
-            done();  // con done sale del beforeEach
-        });
+        if (db.readyState === 0) {
+            const mongoDB = 'mongodb://localhost/testdb';
+            mongoose.connect(mongoDB);
+            db.on('error', console.error.bind(console, 'connection error'));
+            db.once('open', function() {
+                console.log('We are connected to test database!');
+                done();  // con done sale del beforeEach
+            });
+        }
+        else {
+            done();
+        }
     });
 
     afterEach(function(done) {
         Reserva.deleteMany().then(() => {
             // Success
-            console.log("Deleted Many Reserva");
             Usuario.deleteMany().then(() => {
-                console.log("Deleted Many Usuario");
                 Bicicleta.deleteMany().then(() => {
-                    console.log("Deleted Many Bicicleta");
                     done();
                 });
             });
@@ -34,25 +42,28 @@ describe('Testing Usuarios', function() {
     });
 
     describe('Cuando un Usuario reserva una bici', () => {
-        it('debe existir la reserva', async () => {
+        it('debe existir la reserva', (done) => {
             const usuario = new Usuario({nombre: 'Ezequiel'});
-            await usuario.save();
-            const bicicleta = new Bicicleta({code: 1, color: 'rojo', modelo: 'urbana'});
-            await bicicleta.save();
-    
-            const hoy = new Date();
-            const mañana = new Date();
-            mañana.setDate(hoy.getDate()+1);
-            Usuario.reservar(bicicleta.id, usuario.id, hoy, mañana).then(reserva => {
-                // console.log('reserva hecha');
-                Reserva.find({}).populate('bicicleta').populate('usuario').exec().then(reservas => {
-                    // console.log('debe existir la reserva, reservas:', reservas);
-                    expect(reservas.length).toBe(1);
-                    expect(reservas[0].diasDeReserva()).toBe(2);
-                    expect(reservas[0].bicicleta.code).toBe(1);
-                    expect(reservas[0].usuario.nombre).toBe(usuario.nombre);
+            usuario.save().then(() => {
+                const bicicleta = new Bicicleta({code: 1, color: 'rojo', modelo: 'urbana'});
+                bicicleta.save().then(() => {
+                    const hoy = new Date();
+                    const mañana = new Date();
+                    mañana.setDate(hoy.getDate()+1);
+                    Usuario.reservar(bicicleta.id, usuario.id, hoy, mañana).then(reserva => {
+                        // console.log('reserva hecha');
+                        Reserva.find({}).populate('bicicleta').populate('usuario').exec().then(reservas => {
+                            // console.log('debe existir la reserva, reservas:', reservas);
+                            expect(reservas.length).toBe(1);
+                            expect(reservas[0].diasDeReserva()).toBe(2);
+                            expect(reservas[0].bicicleta.code).toBe(1);
+                            expect(reservas[0].usuario.nombre).toBe(usuario.nombre);
+                            done();
+                        });
+                    });
                 });
             });
+    
         });
     });
 });

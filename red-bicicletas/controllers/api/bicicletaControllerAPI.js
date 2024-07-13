@@ -8,25 +8,26 @@ bicicletaContainer.add(a);
 bicicletaContainer.add(b);
 
 exports.bicicleta_list = function(req, res) {
-    res.status(200).json({
-        bicicletas: bicicletaContainer.allBicis
+    Bicicleta.find({}).exec().then(bicicletas => {
+        res.status(200).json({
+            bicicletas: bicicletas
+        });
     });
 }
 
 exports.bicicleta_create = function(req, res) {
-    const bici = Bicicleta.createInstance(parseInt(req.body.id), req.body.color, req.body.modelo);
+    const bici = Bicicleta.createInstance(parseInt(req.body.code), req.body.color, req.body.modelo);
     bici.ubicacion = [parseFloat(req.body.lat), parseFloat(req.body.lng)];
 
-    bicicletaContainer.add(bici);
-
-    res.status(200).json({
-        bicicleta: bici
+    bici.save().then(() => {
+        res.status(200).json(bici);
     });
 }
 
 exports.bicicleta_delete = function(req, res) {
-    bicicletaContainer.removeById(parseInt(req.body.id));
-    res.status(204).send();
+    Bicicleta.deleteOne({ code: parseInt(req.body.code) }).then(d => {
+        res.status(204).json(d);
+    }); // returns {deletedCount: 1}
 }
 
 // exports.bicicleta_update = function(req, res) {

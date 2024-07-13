@@ -4,21 +4,31 @@ const bicicletaContainer = require("../../models/bicicletaContainer");
 
 describe('Testing Bicicletas', function() {
     beforeAll(function(done) {
-        const mongoDB = 'mongodb://localhost/testdb';
-        mongoose.connect(mongoDB);
-
+        /*
+        ready states:
+          0: disconnected
+          1: connected
+          2: connecting
+          3: disconnecting
+        */
         const db = mongoose.connection;
-        db.on('error', console.error.bind(console, 'connection error'));
-        db.once('open', function() {
-            console.log('We are connected to test database!');
-            done();  // con done sale del beforeEach
-        });
+        if (db.readyState === 0) {
+            const mongoDB = 'mongodb://localhost/testdb';
+            mongoose.connect(mongoDB);
+            db.on('error', console.error.bind(console, 'connection error'));
+            db.once('open', function() {
+                console.log('We are connected to test database!');
+                done();  // con done sale del beforeEach
+            });
+        }
+        else {
+            done();
+        }
     });
 
     afterEach(function(done) {
         Bicicleta.deleteMany().then(() => {
             // Success
-            console.log("Deleted Many");
             done();
         }).catch(error => {
             // Failure
