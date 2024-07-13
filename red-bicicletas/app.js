@@ -13,6 +13,15 @@ const usuariosAPIRouter = require('./routes/api/usuarios');
 
 const app = express();
 
+/**
+ * Get database from environment and store in Express
+ */
+const mongoDB = process.env.DATABASE_URL || 'mongodb://localhost/red_bicicletas';
+mongoose.connect(mongoDB);
+mongoose.Promise = global.Promise;
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error: '));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

@@ -13,8 +13,8 @@ describe('Testing Usuarios', function() {
           3: disconnecting
         */
         const db = mongoose.connection;
+        const mongoDB = 'mongodb://localhost/testdb';
         if (db.readyState === 0) {
-            const mongoDB = 'mongodb://localhost/testdb';
             mongoose.connect(mongoDB);
             db.on('error', console.error.bind(console, 'connection error'));
             db.once('open', function() {
@@ -23,6 +23,7 @@ describe('Testing Usuarios', function() {
             });
         }
         else {
+            db.useDb(mongoDB); // Switching happens here..
             done();
         }
     });

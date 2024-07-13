@@ -5,17 +5,29 @@ const request = require("request");
 const server = require("../../bin/www");  // this gets up the server when the script runs
 
 describe("Bicicleta API", () => {
-    // beforeAll(function(done) {
-    //     const mongoDB = 'mongodb://localhost/testdb';
-    //     mongoose.connect(mongoDB);
-
-    //     const db = mongoose.connection;
-    //     db.on('error', console.error.bind(console, 'connection error'));
-    //     db.once('open', function() {
-    //         console.log('We are connected to test database!');
-    //         done();
-    //     });
-    // });
+    beforeAll(function(done) {
+        /*
+        ready states:
+          0: disconnected
+          1: connected
+          2: connecting
+          3: disconnecting
+        */
+        const db = mongoose.connection;
+        const mongoDB = 'mongodb://localhost/testdb';
+        if (db.readyState === 0) {
+            mongoose.connect(mongoDB);
+            db.on('error', console.error.bind(console, 'connection error'));
+            db.once('open', function() {
+                console.log('We are connected to test database!');
+                done();  // con done sale del beforeEach
+            });
+        }
+        else {
+            db.useDb(mongoDB); // Switching happens here..
+            done();
+        }
+    });
 
     afterEach(function(done) {
         Bicicleta.deleteMany().then(() => {
