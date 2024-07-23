@@ -52,9 +52,11 @@ describe('Testing Bicicletas', function() {
     });
 
     describe("Bicicleta.allBicis", () => {
-        it('Comienza vacía', async () => {
-            const bicis = await Bicicleta.allBicis();
-            expect(bicis.length).toBe(0);
+        it('Comienza vacía', (done) => {
+            Bicicleta.allBicis().then(bicis => {
+                expect(bicis.length).toBe(0);
+                done();
+            });
         });
     });
 

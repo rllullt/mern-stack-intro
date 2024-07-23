@@ -1,14 +1,9 @@
 const Bicicleta = require("../models/bicicleta");
-const bicicletaContainer = require("../models/bicicletaContainer");
-
-const a = Bicicleta.createInstance(1, 'rojo', 'urbana', [-34.6012424, -58.3861497]);
-const b = Bicicleta.createInstance(2, 'azul', 'urbana', [-34.596932, -58.3808287]);
-
-bicicletaContainer.add(a);
-bicicletaContainer.add(b);
 
 exports.bicicleta_list = function(req, res) {
-    res.render('bicicletas/index', {bicis: bicicletaContainer.allBicis});
+    Bicicleta.find({}).exec().then(bicis => {
+        res.render('bicicletas/index', {bicis: bicis});
+    })
 }
 
 exports.bicicleta_create_get = function(req, res) {
@@ -16,31 +11,30 @@ exports.bicicleta_create_get = function(req, res) {
 }
 
 exports.bicicleta_update_get = function(req, res) {
-    const bici = bicicletaContainer.findById(req.params.id);
-
-    res.render('bicicletas/update', {bici});
+    Bicicleta.findByCode(req.params.code).then(bici => {
+        res.render('bicicletas/update', {bici});
+    });
 }
 
 exports.bicicleta_create_post = function(req, res) {
-    const bici = new Bicicleta(req.body.id, req.body.color, req.body.modelo);
+    const bici = new Bicicleta({code: req.body.id, color: req.body.color, modelo: req.body.modelo});
     bici.ubicacion = [req.body.lat, req.body.lng];
-    bicicletaContainer.add(bici);
-
-    res.redirect('/bicicletas');
+    Bicicleta.add(bici).then(() => {
+        res.redirect('/bicicletas');
+    });
 }
 
 exports.bicicleta_update_post = function(req, res) {
-    const bici = bicicletaContainer.findById(req.params.id);
-    bici.id = req.body.id;
-    bici.color = req.body.color;
-    bici.modelo = req.body.modelo;
-    bici.ubicacion = [req.body.lat, req.body.lng];
-
-    res.redirect('/bicicletas');
+    Bicicleta.findByCode(req.params.code).then(bici => {
+        bici.code = req.body.id;
+        bici.color = req.body.color;
+        bici.modelo = req.body.modelo;
+        bici.ubicacion = [req.body.lat, req.body.lng];
+        res.redirect('/bicicletas');
+    });
 }
 
 exports.bicicleta_delete_post = function(req, res) {
-    bicicletaContainer.removeById(req.body.id);
-    
+    Bicicleta.removeByCode(req.body.id);
     res.redirect('/bicicletas');
 }
