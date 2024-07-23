@@ -42,6 +42,28 @@ describe('Testing Usuarios', function() {
         });
     });
 
+    describe("Usuario.allUsuarios", () => {
+        it('Comienza vacía', (done) => {
+            Usuario.allUsuarios().then(usuarios => {
+                expect(usuarios.length).toBe(0);
+                done();
+            });
+        });
+    });
+
+    describe("Usuario.add", () => {
+        it('agregamos solo un usuario', (done) => {
+            const usuario = new Usuario({nombre: 'Adán'});
+            Usuario.add(usuario).then(() => {
+                Usuario.allUsuarios().then(usuarios => {
+                    expect(usuarios.length).toBe(1);
+                    expect(usuarios[0].nombre).toBe('Adán');
+                    done();
+                });
+            });
+        });
+    });
+
     describe('Cuando un Usuario reserva una bici', () => {
         it('debe existir la reserva', (done) => {
             const usuario = new Usuario({nombre: 'Ezequiel'});

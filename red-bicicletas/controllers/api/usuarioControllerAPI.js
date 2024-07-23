@@ -1,6 +1,6 @@
 const Usuario = require('../../models/usuario');
 
-exports.usuarios_list = async (req, res) => {
+exports.usuarios_list = (req, res) => {
     Usuario.find({}).exec().then(usuarios => {
         res.status(200).json({
             usuarios: usuarios
