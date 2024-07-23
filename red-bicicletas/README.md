@@ -26,8 +26,22 @@ Node package that lets to automatically update the content of the project when c
 
 Quick map creator used for adding a map fast.
 
+## API
 
-## Steps taken for creating the MVC Bicicletas
+The API can be tested via curl. Examples:
+
+Create a Bicicleta:
+```
+curl -X POST http://localhost:3000/api/bicicletas/create -d code=3 -d color='morado' -d modelo='pista' -d lat=-34.595198 -d lng=-58.379914
+```
+
+Create a Usuario:
+```
+curl -X POST http://localhost:3000/api/usuarios/create -d nombre='Spiderman'
+```
+
+
+## Steps taken for creating the MVC Bicicletas (old, now it uses persistence wwith Mongo and a biciclietaContainer is no longer needed)
 
 1. Install nodemon with npm.
 1. Create an npm script within the package.json, below ''start'', called ''devstart'', and get up the server with nodemon.
