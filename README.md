@@ -31,7 +31,7 @@ Node package that lets to automatically update the content of the project when c
 Quick map creator used for adding a map fast.
 
 
-## Steps taken for creating the MVC Bicicletas
+## Steps taken for creating the MVC Bicicletas (old, now it uses persistence wwith Mongo and a biciclietaContainer is no longer needed)
 
 1. Install nodemon with npm.
 1. Create an npm script within the package.json, below ''start'', called ''devstart'', and get up the server with nodemon.
