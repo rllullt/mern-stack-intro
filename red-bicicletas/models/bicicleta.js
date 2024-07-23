@@ -30,7 +30,7 @@ bicicletaSchema.methods.toString = function() {
 // Third parameter is null i.e. no query options (e.g. limit)
 bicicletaSchema.statics.allBicis = async function() {
     // this hace referencia al schema. find recibe el filtro (vacío en este caso) + el callback
-    return await this.find({});
+    return await this.find({}).exec();
 };
 
 bicicletaSchema.statics.add = function(aBici) {
@@ -38,11 +38,11 @@ bicicletaSchema.statics.add = function(aBici) {
 }
 
 bicicletaSchema.statics.findByCode = async function(aCode) {
-    return await this.findOne({code: aCode});
+    return await this.findOne({code: aCode}).exec();
 }
 
 bicicletaSchema.statics.removeByCode = async function(aCode) {
-    await this.deleteOne({code: aCode});
+    await this.deleteOne({code: aCode}).exec();
 }
 
 module.exports = mongoose.model('Bicicleta', bicicletaSchema);
