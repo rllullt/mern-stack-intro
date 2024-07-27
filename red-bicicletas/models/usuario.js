@@ -21,6 +21,7 @@ const usuarioSchema = new Schema({
         trim: true,
         required: [true, 'El email es obligatorio'],
         lowercase: true,
+        unique: true,  // install this feature via `npm i mongoose-unique-validator --save`
         validate: [validateEmail, 'Por favor, ingrese un email válido'],
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/],
     },
@@ -35,6 +36,11 @@ const usuarioSchema = new Schema({
         default: false,
     },
 });
+
+/**
+ * PATH hace referencia al atributo email
+ */
+usuarioSchema.plugin(uniqueValidator, { message: 'El {PATH} ya existe con otro usuario.' })
 
 /**
  * Siempre, antes de que se ejecute un save, se ejecutará la función
