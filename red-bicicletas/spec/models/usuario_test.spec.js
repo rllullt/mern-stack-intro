@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Bicicleta = require('../../models/bicicleta');
 const Usuario = require('../../models/usuario');
 const Reserva = require('../../models/reserva');
+const mailer = require('../../mailer');
 
 describe('Testing Usuarios', function() {
     beforeAll(function(done) {
@@ -40,6 +41,15 @@ describe('Testing Usuarios', function() {
             // Failure
             console.log(error);
         });
+    });
+
+    describe("Send email", () => {
+        it('Send an email', (done) => {
+            mailer.sendEmail('hola_chao_hola@gmail.com', 'Este es un email de prueba', '<body>Hola. Este es el body.<body/>').then(() => {
+                console.log('Correo enviado correctamente');
+                done();
+            })
+        })
     });
 
     describe("Usuario.allUsuarios", () => {
