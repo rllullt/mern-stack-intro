@@ -3,6 +3,9 @@ const uniqueValidator = require('mongoose-unique-validator');
 const Reserva = require('./reserva');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const Token = require('../models/token');
+const mailer = require('../mailer');
 
 const saltRounds = 10;  // introduces some randomness to a ‘cryptonization’
 
@@ -69,6 +72,31 @@ usuarioSchema.statics.add = function(usuario) {
 usuarioSchema.statics.reservar = (biciId, userId, desde, hasta) => {
     const reserva = new Reserva({bicicleta: biciId, usuario: userId, desde: desde, hasta: hasta});
     return reserva.save();
+}
+
+usuarioSchema.methods.enviar_email_bienvenida = function(cb) {
+    const token = new Token({
+        _userid: this.id,
+        token: crypto.randomByites(16).toString('hex'),
+    });
+    const email_destination = this.email;
+    token.save(function(err) {
+        if (err) {
+            return console.log(err.message);
+        }
+        const html = `<p>Hola,</p>
+            <br>
+            <p>Por favor, para verificar su cuenta haga clic en el siguiente enlace:
+            <br>
+            http://localhost:3000\/token/confirmation\/${token.token} .
+            </p>`;
+        console.log('Sending email:', html);
+        return mailer.sendEmail(
+            email_destination,
+            'Verificación de cuenta',
+            html
+        );
+    });
 }
 
 module.exports = mongoose.model('Usuario', usuarioSchema);
