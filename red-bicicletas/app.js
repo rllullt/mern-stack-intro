@@ -70,7 +70,7 @@ app.get('/logout', function(req, res) {
 });
 
 app.get('/forgotPassword', function(req, res) {
-  // nada
+  res.render('session/forgotPassword');
 });
 
 app.post('/forgotPassword', function(req, res) {
