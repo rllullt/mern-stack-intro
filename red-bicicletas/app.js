@@ -52,11 +52,21 @@ app.get('/login', function(req, res) {
 });
 
 app.post('/login', function(req, res, next) {
-  // passport
+  passport.authenticate('local', function(err, user, info) {
+    if (err) return next(err);
+    if (!user) return res.render('session/login', {info});
+    req.logIn(user, function(err) {
+      if (err) return next(err);
+      return res.redirect('/');
+    });
+  })(req, res, next);
 });
 
 app.get('/logout', function(req, res) {
-  res.redirect('/');
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
 });
 
 app.get('/forgotPassword', function(req, res) {
