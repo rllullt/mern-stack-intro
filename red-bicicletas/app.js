@@ -13,6 +13,7 @@ const tokensRouter = require('./routes/tokens');
 const bicicletasRouter = require('./routes/bicicletas');
 const bicicletasAPIRouter = require('./routes/api/bicicletas');
 const usuariosAPIRouter = require('./routes/api/usuarios');
+const usuario = require('./models/usuario');
 
 const store = new session.MemoryStore;
 
@@ -74,14 +75,75 @@ app.get('/forgotPassword', function(req, res) {
 });
 
 app.post('/forgotPassword', function(req, res) {
-  // nada
+  usuario.findOne({ email: req.body.email }).then(user => {
+    if (!user) return res.render('session/forgotPassword', {info: {message: 'Email no existe'}});
+
+    user.resetPassword().then(() => {
+      console.log('session/forgotPasswordMessage');
+    }).catch(err => {
+      return next(err);
+    })
+  }).catch(err => {
+    return done(err);
+  })
+  res.render('session/forgotPasswordMessage');
 });
 
+app.get('/resetPassword/:token', function (req, res, next) {
+  Token.findOne({ token: req.params.token }).then(token => {
+    if (!token) return res.status(400)
+      .send({ type: 'not-verified', msg: 'No existe un usuario con este Token. Verifique que su token no haya expirado' });
+
+    User.findById(token._userId).then(user => {
+      if (!user) return res.status(400).send({ msg: 'No existe un usuario asociado al token' });
+      res.render('session/resetPassword', { errors: {}, user: user });
+    }).catch(err => {
+      console.log(err);
+    });
+  }).catch(err => {
+    console.log(err);
+  });
+});
+
+app.post('/resetPassword', function (req, res) {
+  if (req.body.password !== req.body.confirm_password) {
+    res.render('session/resetPassword', {
+      errors: { confirm_password: { message: 'No coincide con el password ingresado' } },
+      user: new User({ email: req.body.email })
+    });
+  }
+  User.findOne({ email: req.body.email }, function (err, user) {
+    user.password = req.body.password;
+    user.save(function (err) {
+      if (err) {
+        res.render('session/resetPassword', { errors: err.errors, user: new User({ email: req.body.email }) });
+      } else {
+        res.redirect('/login');
+      }
+    });
+  });
+});
+
+/**
+ * Asegura que el usuario esté logueado «cuando pase por acá»
+ * Forma práctica de seguizar rutas
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+function loggedIn(req, res, next) {
+  if (req.user) {
+    next();  // todo bien, contnúa a la siguiente capa de middleware
+  } else {
+    console.log('user not logged');
+    res.redirect('/login');
+  }
+}
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/token', tokensRouter);
-app.use('/bicicletas', bicicletasRouter);
+app.use('/bicicletas', loggedIn, bicicletasRouter);  // primero se ejecuta el loggedIn. Usuario logueado -> sig. cód.
 app.use('/api/bicicletas', bicicletasAPIRouter);
 app.use('/api/usuarios', usuariosAPIRouter);
 
