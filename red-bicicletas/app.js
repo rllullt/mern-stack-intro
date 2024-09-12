@@ -13,11 +13,17 @@ const tokensRouter = require('./routes/tokens');
 const bicicletasRouter = require('./routes/bicicletas');
 const bicicletasAPIRouter = require('./routes/api/bicicletas');
 const usuariosAPIRouter = require('./routes/api/usuarios');
+const authAPIRouter = require('./routes/api/auth');
 const usuario = require('./models/usuario');
+
+const jwt = require('jsonwebtoken');
 
 const store = new session.MemoryStore;
 
 const app = express();
+
+app.set('secretKey', 'clave secreta muajajaja');
+
 app.use(session({
   cookie: { maxAge: 240 * 60 * 60 * 1000 },  // 240 hrs
   store: store,
@@ -144,19 +150,24 @@ function validateUser(req, res, next) {
   jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function (err, decoded) {
     if (err) {
       res.json({ status: 'error', message: err.message, data: null });
-    } else {
+    }
+    else {
       req.body.userId = decoded.id;
       console.log('jwt verify: ' + decoded);
       next();
     }
   });
+  console.log('req.headers["x-access-token"]:', req.headers['x-access-token']);
+  console.log("req.app.get('secretKey'):", req.app.get('secretKey'));
 }
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/token', tokensRouter);
 app.use('/bicicletas', loggedIn, bicicletasRouter);  // primero se ejecuta el loggedIn. Usuario logueado -> sig. cód.
-app.use('/api/bicicletas', bicicletasAPIRouter);
+
+app.use('/api/auth', authAPIRouter);
+app.use('/api/bicicletas', validateUser, bicicletasAPIRouter);
 app.use('/api/usuarios', usuariosAPIRouter);
 
 // catch 404 and forward to error handler
