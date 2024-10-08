@@ -42,3 +42,11 @@ Quick map creator used for adding a map fast.
 1. Create the router for bicicletas.
 1. Create methods for listing, creating, eliminating and updating bicicletas by the web.
 1. Review the process of the operations created.
+
+
+## Authentication
+
+It is implemented an authentication system based on JWT: JASON Web Token, with the jasonwebtoken library and sessions express-session.
+
+Some resources are only accessible via login with email and password.
+When a user logs in the application through the API, the app returns a token that the client must preserve and append in every request he does, to verify his authenticity.
