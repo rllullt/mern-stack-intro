@@ -60,6 +60,33 @@ usuarioSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password);
 }
 
+usuarioSchema.methods.resetPassword = function() {
+    const token = new Token({ _userId: this.id, token: crypto.randomByites(16).toString('hex') });
+    const email_destination = this.email;
+    return new Promise((resolve, reject) => {
+        token.save(err => {
+            if (err) reject(err);
+
+            const mailOptions = {
+                from: 'no-reply@redbicicletas.com',
+                to: email_destination,
+                subject: 'Restablecimiento de contraseña',
+                text: `<p>Hola,</p>
+                <br>
+                <p>Por favor, para restablecer su contraseña haga clic en el siguiente enlace:
+                <br>
+                http://localhost:3000/resetPassword/${token.token} .
+                </p>`
+            };
+
+            mailer.sendEmail(mailOptions).then(() => {
+                console.log(`Se envió un email para restablecer la contraseña a: ${email_destination}.`);
+                resolve();
+            }).catch(err => reject(err));
+        });
+    });
+}
+
 usuarioSchema.statics.allUsuarios = function() {
     // this hace referencia al schema. find recibe el filtro (vacío en este caso) + el callback
     return this.find({}).exec();

@@ -80,7 +80,7 @@ app.get('/forgotPassword', function(req, res) {
   res.render('session/forgotPassword');
 });
 
-app.post('/forgotPassword', function(req, res) {
+app.post('/forgotPassword', function(req, res, next) {
   usuario.findOne({ email: req.body.email }).then(user => {
     if (!user) return res.render('session/forgotPassword', {info: {message: 'Email no existe'}});
 
@@ -90,7 +90,7 @@ app.post('/forgotPassword', function(req, res) {
       return next(err);
     })
   }).catch(err => {
-    return done(err);
+    return next(err);
   })
   res.render('session/forgotPasswordMessage');
 });
