@@ -1,4 +1,9 @@
 {
+  "name": "red-bicicletas",
+  "version": "0.1.0",
+  "scripts": {
+    "postinstall": "npm install --prefix red-bicicletas"
+  },
   "dependencies": {
     "express-generator": "^4.16.1"
   }
