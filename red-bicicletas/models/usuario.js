@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const Token = require('../models/token');
-const mailer = require('../mailer');
+const mailer = require('../mailer/mailer');
 
 const saltRounds = 10;  // introduces some randomness to a ‘cryptonization’
 

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Bicicleta = require('../../models/bicicleta');
 const Usuario = require('../../models/usuario');
 const Reserva = require('../../models/reserva');
-const mailer = require('../../mailer');
+const mailer = require('../../mailer/mailer');
 
 describe('Testing Usuarios', function() {
     beforeAll(function(done) {
