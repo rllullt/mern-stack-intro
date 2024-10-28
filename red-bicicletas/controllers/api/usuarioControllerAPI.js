@@ -9,10 +9,12 @@ exports.usuarios_list = (req, res) => {
 }
 
 exports.usuarios_create = (req, res) => {
-    const usuario = new Usuario({nombre: req.body.nombre});
+    const usuario = new Usuario({nombre: req.body.nombre, email: req.body.email, password: req.body.password});
 
     usuario.save().then(() => {
         res.status(200).json(usuario);
+    }).catch(err => {
+        res.status(500).json(err);
     });
 }
 

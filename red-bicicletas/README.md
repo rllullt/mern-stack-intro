@@ -57,3 +57,8 @@ curl -X POST http://localhost:3000/api/usuarios/create -d nombre='Spiderman'
 
 The jasmine package is used.
 Tests are contained in the ‘spec’ folder.
+
+
+## Dotenv
+
+The dotenv package is used to load the environment variables from the .env file.

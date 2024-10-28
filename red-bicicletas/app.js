@@ -1,3 +1,4 @@
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -35,7 +36,7 @@ app.use(session({
 /**
  * Get database from environment and store in Express
  */
-const mongoDB = process.env.DATABASE_URL || 'mongodb://localhost/red_bicicletas';
+const mongoDB = process.env.MONGO_URI || 'mongodb://localhost/red_bicicletas';
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 const db = mongoose.connection;
