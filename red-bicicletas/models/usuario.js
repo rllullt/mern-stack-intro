@@ -101,7 +101,7 @@ usuarioSchema.statics.reservar = (biciId, userId, desde, hasta) => {
     return reserva.save();
 }
 
-usuarioSchema.statics.findOneOrCreateByGoogle = function(condition) {
+usuarioSchema.statics.findOneOrCreateByGoogle = function findOneOrCreate(condition) {
     console.log('condition:', condition);
     this.findOne({
         $or:[
