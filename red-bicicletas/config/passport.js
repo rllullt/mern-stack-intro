@@ -20,7 +20,7 @@ passport.use(new GoogleStrategy({
   },
   function(accessToken, refreshToken, profile, cb) {
     console.log('profile:', profile);
-    User.findOrCreateByGoogle({ googleId: profile.id }).then(user => {
+    Usuario.findOrCreateByGoogle({ googleId: profile.id }).then(user => {
         if (user) return cb(null, user);
         return cb(err, null);
     }).catch(err => {
