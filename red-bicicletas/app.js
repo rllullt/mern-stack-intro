@@ -7,6 +7,7 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const passport = require('./config/passport');
 const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -19,7 +20,21 @@ const usuario = require('./models/usuario');
 
 const jwt = require('jsonwebtoken');
 
-const store = new session.MemoryStore;
+let store;
+if (process.env.NODE_ENV === 'development') {
+  store = new session.MemoryStore;
+}
+else {
+  // This cancels memory leaks in production
+  store = new MongoDBStore({
+    uri: process.env.MONGO_URI,
+    collection: 'sessions'
+  });
+  store.on('error', error => {
+    assert.ifError(error);
+    assert.ok(false);
+  });
+}
 
 const app = express();
 
@@ -170,6 +185,16 @@ app.use('/bicicletas', loggedIn, bicicletasRouter);  // primero se ejecuta el lo
 app.use('/api/auth', authAPIRouter);
 app.use('/api/bicicletas', validateUser, bicicletasAPIRouter);
 app.use('/api/usuarios', usuariosAPIRouter);
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile'] }));
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+  // Successful authentication, redirect home.
+  res.redirect('/');
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
