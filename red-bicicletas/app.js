@@ -187,16 +187,9 @@ app.use('/api/bicicletas', validateUser, bicicletasAPIRouter);
 app.use('/api/usuarios', usuariosAPIRouter);
 
 app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile'] }));
+  passport.authenticate('google', { scope: ['profile', 'emails'] }));
 
 app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  function(req, res) {
-  // Successful authentication, redirect home.
-  res.redirect('/');
-});
-
-app.get('/auth/undefined/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res) {
   // Successful authentication, redirect home.

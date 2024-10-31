@@ -16,11 +16,11 @@ passport.use(new localStrategy(function (email, password, done) {
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.HOST + "/auth/google/callback"  // HOST: local o producción
+    callbackURL: process.env.HOST + "/auth/google/callback",  // HOST: local o producción
   },
   function(accessToken, refreshToken, profile, cb) {
     console.log('profile:', profile);
-    Usuario.findOneOrCreateByGoogle({ googleId: profile.id }).then(user => {
+    Usuario.findOneOrCreateByGoogle(profile).then(user => {
         if (user) return cb(null, user);
         return cb(err, null);
     }).catch(err => {
