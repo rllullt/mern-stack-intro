@@ -123,7 +123,12 @@ usuarioSchema.statics.findOneOrCreateByGoogle = function findOneOrCreate(conditi
             // values.password = condition._json.etag;
             console.log('--------- VALUES ---------');
             console.log(values);
-            return this.create(values);  // create es una promesa
+            this.create(values).then(user => {
+                return resolve(user);
+            }).catch(err => {
+                console.error(err);
+                reject(err);
+            })
         }).catch(err => {
             console.error(err);
             reject(err);
