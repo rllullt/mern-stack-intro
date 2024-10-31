@@ -109,7 +109,7 @@ usuarioSchema.statics.findOneOrCreateByGoogle = function findOneOrCreate(conditi
                 {'googleId': condition.id}, {'email': condition.emails[0].value}
             ]
         }).then(user => {
-            if (user) resolve(user);  // login
+            if (user) return resolve(user);  // login
     
             // Not user, registro
             console.log('--------- CONDITION ---------');
@@ -123,9 +123,10 @@ usuarioSchema.statics.findOneOrCreateByGoogle = function findOneOrCreate(conditi
             // values.password = condition._json.etag;
             console.log('--------- VALUES ---------');
             console.log(values);
-            return this.create(values);
+            return this.create(values);  // create es una promesa
         }).catch(err => {
             console.error(err);
+            reject(err);
         });
     })
 }
