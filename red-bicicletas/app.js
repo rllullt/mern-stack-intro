@@ -187,7 +187,7 @@ app.use('/api/bicicletas', validateUser, bicicletasAPIRouter);
 app.use('/api/usuarios', usuariosAPIRouter);
 
 app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'emails'] }));
+  passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
