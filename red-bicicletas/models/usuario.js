@@ -103,33 +103,31 @@ usuarioSchema.statics.reservar = (biciId, userId, desde, hasta) => {
 
 usuarioSchema.statics.findOneOrCreateByGoogle = function findOneOrCreate(condition) {
     console.log('condition:', condition);
-    this.findOne({
-        $or:[
-            {'googleId': condition.id}, {'email': condition.emails[0].value}
-        ]
-    }).then(user => {
-        if (user) return user;  // login
-
-        // Not user, registro
-        console.log('--------- CONDITION ---------');
-        console.log(condition);
-        const values = {};
-        values.googleId = condition.id;
-        values.email = condition.emails[0].value;
-        values.nombre = condition.displayName || 'SIN NOMBRE';
-        values.verificado = true;
-        values.password = crypto.randomBytes(16).toString('hex');  // random password not given to user
-        // values.password = condition._json.etag;
-        console.log('--------- VALUES ---------');
-        console.log(values);
-        this.create(values).then(result => {
-            return result;
+    return new Promise((resolve, reject) => {
+        this.findOne({
+            $or:[
+                {'googleId': condition.id}, {'email': condition.emails[0].value}
+            ]
+        }).then(user => {
+            if (user) resolve(user);  // login
+    
+            // Not user, registro
+            console.log('--------- CONDITION ---------');
+            console.log(condition);
+            const values = {};
+            values.googleId = condition.id;
+            values.email = condition.emails[0].value;
+            values.nombre = condition.displayName || 'SIN NOMBRE';
+            values.verificado = true;
+            values.password = crypto.randomBytes(16).toString('hex');  // random password not given to user
+            // values.password = condition._json.etag;
+            console.log('--------- VALUES ---------');
+            console.log(values);
+            return this.create(values);
         }).catch(err => {
             console.error(err);
-        })
-    }).catch(err => {
-        console.error(err);
-    });
+        });
+    })
 }
 
 usuarioSchema.methods.enviar_email_bienvenida = function(cb) {
