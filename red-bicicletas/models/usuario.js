@@ -39,6 +39,8 @@ const usuarioSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    googleId: String,
+    facebookId: String,
 });
 
 /**
@@ -127,11 +129,46 @@ usuarioSchema.statics.findOneOrCreateByGoogle = function findOneOrCreate(conditi
                 return resolve(user);
             }).catch(err => {
                 console.error(err);
-                reject(err);
+                reject(new Error(err));
             })
         }).catch(err => {
             console.error(err);
-            reject(err);
+            reject(new Error(err));
+        });
+    })
+}
+
+usuarioSchema.statics.findOneOrCreateByFacebook = function findOneOrCreate(condition) {
+    console.log('condition:', condition);
+    return new Promise((resolve, reject) => {
+        this.findOne({
+            $or:[
+                {'facebookId': condition.id}, {'email': condition.emails[0].value}
+            ]
+        }).then(user => {
+            if (user) return resolve(user);  // login
+    
+            // Not user, registro
+            console.log('--------- CONDITION ---------');
+            console.log(condition);
+            const values = {};
+            values.facebookId = condition.id;
+            values.email = condition.emails[0].value;
+            values.nombre = condition.displayName || 'SIN NOMBRE';
+            values.verificado = true;
+            values.password = crypto.randomBytes(16).toString('hex');  // random password not given to user
+            // values.password = condition._json.etag;
+            console.log('--------- VALUES ---------');
+            console.log(values);
+            this.create(values).then(user => {
+                return resolve(user);
+            }).catch(err => {
+                console.error(err);
+                reject(new Error(err));
+            })
+        }).catch(err => {
+            console.error(err);
+            reject(new Error(err));
         });
     })
 }

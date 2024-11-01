@@ -2,6 +2,7 @@ const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const Usuario = require('../models/usuario');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const FacebookTokenStrategy = require('passport-facebook-token');
 
 passport.use(new localStrategy(function (email, password, done) {
     Usuario.findOne({ email: email }).then(user => {
@@ -21,13 +22,25 @@ passport.use(new GoogleStrategy({
   function(accessToken, refreshToken, profile, cb) {
     console.log('profile:', profile);
     Usuario.findOneOrCreateByGoogle(profile).then(user => {
-        if (user) return cb(null, user);
-        return cb(err, null);
+        return cb(null, user);
     }).catch(err => {
         return cb(err, null);
     });
   }
 ));
+
+passport.use(new FacebookTokenStrategy({
+    clientID: process.env.FACEBOOK_ID,
+    clientSecret: process.env.FACEBOOK_SECRET,
+    callbackURL: process.env.HOST + "/auth/facebook/callback",
+},
+function(accessToken, refreshToken, profile, cb) {
+    User.findOneOrCreateByFacebook(profile).then(user => {
+        return cb(null, user);
+    }).catch(err => {
+        return cb(err, null);
+    });
+}));
 
 passport.serializeUser(function (user, done) {
     done(null, user.id);
