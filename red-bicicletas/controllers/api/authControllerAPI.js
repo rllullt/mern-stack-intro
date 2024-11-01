@@ -31,7 +31,7 @@ module.exports = {
         if (req.user) {  // se puede usar el user, porque
                          // se usó el passport.authenticate con facebook token como middleware
                          // en la ruta para facebook_token en auth.js
-            req.use.save().then(() => {
+            req.user.save().then(() => {
                 const token = jwt.sign({id: req.user.id}, req.app.get('secretKey'), {expiresIn: '7d'});
                 res.status(200).json({message: "Usuario encontrado o creado!", data: {user: req.user, token: token}});
             }).catch(err => {
