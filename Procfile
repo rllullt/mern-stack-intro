@@ -1,1 +1,1 @@
-web: npm start --prefix red-bicicletas
+web: npm start --prefix red-bicicletas --experimental-loader=newrelic/esm-loader.mjs
