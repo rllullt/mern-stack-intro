@@ -62,3 +62,27 @@ Tests are contained in the ‘spec’ folder.
 ## Dotenv
 
 The dotenv package is used to load the environment variables from the .env file.
+
+
+## Authentication
+
+It is implemented an authentication system based on JWT: JASON Web Token, with the jasonwebtoken library and sessions express-session.
+
+Some resources are only accessible via login with email and password.
+When a user logs in the application through the API, the app returns a token that the client must preserve and append in every request he does, to verify his authenticity.
+
+Users can also access via Google OAuth and Facebook API OAuth (for example, for mobile applications that use our API, they can log in with Facebook. Google API OAuth and Facebook web app OAuth are not implemented ---yet?---).
+
+
+## Usage analytics: New Relic
+
+The app uses New Relic for analytics.
+
+The installation of this package is a bit different today than how it is explained in the Coursera course.
+Now, it is important to have some environment variables and add the suffix `--experimental-loader=newrelic/esm-loader.mjs` when starting up the application.
+
+Running the app in Heroku involves a special Procfile, because the app is in /red-bicicletas sub folder and also the New Relic metrics.
+The Procfile looks like this:
+```
+web: npm start --prefix red-bicicletas --experimental-loader=newrelic/esm-loader.mjs
+```
